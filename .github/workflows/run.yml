@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Setting up node.js
-        uses: actions/setup-node@v3.5.1
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: '18.12.0'
 
