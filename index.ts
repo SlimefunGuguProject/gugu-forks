@@ -90,27 +90,33 @@ async function getCommitsBehind(repo: string): Promise<number> {
   }
 }
 
+async function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 async function main() {
   console.log('获取仓库列表...')
 
   const repos = await getRepos()
   console.log(`拥有${repos.length}个fork仓库`)
   const results: RepoStatus[] = []
-  repos.forEach(async (repo) => {
+  for (let i = 0; i < repos.length; i++) {
+    console.log(`正在检测第${i + 1}个仓库`)
+    const repo = repos[i]
     const behind_diff = await getCommitsBehind(repo)
 
     if (behind_diff > 0) {
       results.push({ repo, behind_diff })
     }
-    await new Promise(r => setTimeout(r, 1000))
-  })
+    await sleep(100)
+  }
 
   if (results.length > 0) {
     const date = new Date()
-    let issueBody = `# 仓库检测信息\n\n运行时间: ${date}\n${ORG_NAME}组织共有${repos.length}个fork仓库\n其中有${results.length}个仓库落后上游\n\n## 仓库列表\n| 仓库 | 落后commit数 |\n| --- | --- |\n`
+    let issueBody = `# 仓库检测信息\n\n运行时间: ${date}\n**${ORG_NAME}** 组织共有 ${repos.length} 个fork仓库\n其中有 ${results.length} 个仓库落后上游\n\n## 仓库列表\n| 仓库 | 落后commit数 |\n| --- | --- |\n`
 
     results.forEach((result) => {
-      console.log(`${result.repo} 需要合并上游的 ${result.behind_diff} 个commit`)
+      console.log(`[${result.repo}](https://github.com/${ORG_NAME}/${result.repo}) 需要合并上游的 ${result.behind_diff} 个commit`)
       issueBody += `| ${result.repo} | ${result.behind_diff} |\n`
     })
 
