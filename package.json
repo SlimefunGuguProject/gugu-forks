@@ -12,8 +12,8 @@
   "author": "ybw0014",
   "devDependencies": {
     "@types/node": "^20.3.1",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
-    "@typescript-eslint/parser": "^5.60.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.26.0",
     "typescript": "^5.1.3"
   },
