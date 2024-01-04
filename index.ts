@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest'
+import { SingleBar, Presets } from 'cli-progress'
 
 const ORG_NAME = 'SlimefunGuguProject' // 组织名
 const REPO_NAME = 'gugu-forks' // 本项目仓库名
@@ -30,7 +31,7 @@ async function getRepos(): Promise<string[]> {
         org: ORG_NAME,
         type: 'forks',
         per_page: PER_PAGE,
-        page: page,
+        page: page
       })
 
       const len = data.length
@@ -54,7 +55,6 @@ async function getRepos(): Promise<string[]> {
   }
   return repos
 }
-
 
 /**
  * 获取仓库落后commit数量
@@ -98,7 +98,10 @@ async function main() {
   console.log('获取仓库列表...')
 
   const repos = await getRepos()
+  const progressBar = new SingleBar({}, Presets.shades_classic)
+
   console.log(`拥有${repos.length}个fork仓库`)
+  progressBar.start(repos.length, 0)
   const results: RepoStatus[] = []
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i]
@@ -106,14 +109,14 @@ async function main() {
     if (behind_diff > 0) {
       results.push({ repo, behind_diff })
     }
-    if ((i + 1) % 10 === 0) {
-      console.log(`已处理${i + 1}/${repos.length}`)
-    }
+    progressBar.update(i + 1)
     await sleep(50)
   }
+  progressBar.stop()
 
   if (results.length > 0) {
     const date = new Date()
+    // eslint-disable-next-line max-len
     let issueBody = `# 仓库检测信息\n\n运行时间: ${date}\n\n**${ORG_NAME}** 组织共有 ${repos.length} 个fork仓库\n其中有 ${results.length} 个仓库落后上游\n\n## 仓库列表\n| 仓库 | 落后commit数 |\n| --- | --- |\n`
 
     results.forEach((result) => {
