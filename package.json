@@ -11,6 +11,8 @@
   "keywords": [],
   "author": "ybw0014",
   "devDependencies": {
+    "@guizhan/eslint-config": "^0.2.1",
+    "@types/cli-progress": "^3.11.5",
     "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -19,6 +21,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^20.0.0",
+    "cli-progress": "^3.12.0",
     "ts-node": "^10.9.1"
   }
 }

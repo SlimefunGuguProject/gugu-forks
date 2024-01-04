@@ -14,35 +14,19 @@ jobs:
       ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Checking out Repository
-        uses: actions/checkout@master
+      - name: Checking out repository
+        uses: actions/checkout@v4
 
-      - name: Setting up node.js
-        uses: actions/setup-node@v4.0.1
+      - name: Setting up node
+        uses: actions/setup-node@v4
         with:
-          node-version: '18.12.0'
+          node-version: '20.3.0'
 
-      - name: Setting up pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7.14.1
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+      - name: Setting up bun
+        uses: oven-sh/setup-bun@v1
 
       - name: Installing dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Run script
-        run: pnpm run start
+        run: bun run start
